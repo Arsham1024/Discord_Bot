@@ -26,18 +26,41 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):
+async def on_message(message1):
+  # for parsing the message1
+  message = message1.content
+  channel = message1.channel
+
   # if the message is from the bot itself ignore
-  if message.author == client.user:
+  if message1.author == client.user:
     return
   # if message starts with $ it is a command
-  if message.content.startswith('$'):
+  if message.startswith('$f'):
     # return fortune
-    await message.channel.send(get_fortune())
+    await channel.send(get_fortune())
+
+  elif message.startswith('$p'):
+    parsed_msg = message.split('-')
+    prompt = parsed_msg[1]
+    options = parsed_msg[2:]
+
+    # output prompt that user specified
+    await channel.send('taking a poll now!\n' + prompt)
+    #print out all the options that the user inputed
+    bot_msg = ''
+    for i in range(len(options)):
+      bot_msg += str("\n\t" + str(i+1) + f") {options[i]}")
+
+    reactto = await channel.send(bot_msg)
+
+    # add reaction to own bot's message
+    for i in range(10):
+      await reactto.add_reaction('\U0001F43D')
 
 
-# This is the uptimerobot.com . keeps this script running all the time.
-keep_alive()
+
+# use uptimerobot.com . keeps this script running all the time.
+#keep_alive()
 
 # Environment variable is a variable that is private. because this repil is public
 # need to hide the TOKEN of the bot.
