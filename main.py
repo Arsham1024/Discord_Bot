@@ -60,7 +60,7 @@ async def on_message(message1):
 
 
 # use uptimerobot.com . keeps this script running all the time.
-#keep_alive()
+keep_alive()
 
 # Environment variable is a variable that is private. because this repil is public
 # need to hide the TOKEN of the bot.
