@@ -1,6 +1,8 @@
 # discord api
 import discord
+from discord.utils import get
 import os
+import asyncio
 # for working with apis 
 import requests
 import json
@@ -8,10 +10,15 @@ import json
 from KeepAlive import keep_alive
 # database
 from replit import db
+import matplotlib.pyplot as plt
 
 
 client = discord.Client()
+sleeptime = 10
 
+# make a plot using reactions to bots last message
+def makeplot(names , values):
+  return plt.barplot(names, values)
 
 # returns a fortune from the online api
 def get_fortune():
@@ -35,11 +42,12 @@ async def on_message(message1):
   if message1.author == client.user:
     return
   # if message starts with $ it is a command
-  if message.startswith('$f'):
+  if message.startswith('!f'):
     # return fortune
     await channel.send(get_fortune())
 
-  elif message.startswith('$p'):
+  elif message.startswith('!p'):
+    pollmessage = message
     parsed_msg = message.split('-')
     prompt = parsed_msg[1]
     options = parsed_msg[2:]
@@ -51,16 +59,40 @@ async def on_message(message1):
     for i in range(len(options)):
       bot_msg += str("\n\t" + str(i+1) + f") {options[i]}")
 
+    # message to react to 
     reactto = await channel.send(bot_msg)
+    # numbers for indications
+    emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
+    # add reaction to own bot's message coresponding to the number of options
+    for i in range(len(options)):
+        await reactto.add_reaction(emoji_numbers[i])
 
-    # add reaction to own bot's message
-    for i in range(10):
-      await reactto.add_reaction('\U0001F43D')
+    await asyncio.sleep(sleeptime)  # wait for one minute
+
+    cache_msg = discord.utils.get(client.cached_messages, id=reactto.id)
+
+    # make names and values for plot device
+    names = []
+    values = []
+
+    for i in cache_msg.reactions:
+      print(i.emoji , i.count)
+      names.append(i.emoji)
+      values.append(i.count)
+    
+    makeplot(names, values)
+
+# @client.event
+# async def on_reaction_add(reaction , user):
+#   values = reaction.count
+
+  
+
 
 
 
 # use uptimerobot.com . keeps this script running all the time.
-#keep_alive()
+# keep_alive()
 
 # Environment variable is a variable that is private. because this repil is public
 # need to hide the TOKEN of the bot.
