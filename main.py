@@ -14,11 +14,11 @@ import matplotlib.pyplot as plt
 
 
 client = discord.Client()
-sleeptime = 10
+sleeptime = 1
 
-# make a plot using reactions to bots last message
-def makeplot(names , values):
-  return plt.barplot(names, values)
+  
+  
+  
 
 # returns a fortune from the online api
 def get_fortune():
@@ -80,7 +80,10 @@ async def on_message(message1):
       names.append(i.emoji)
       values.append(i.count)
     
-    makeplot(names, values)
+    plt.bar(names, values)
+    plt.show()
+    plt.savefig('plot.png')
+    await channel.send(file=discord.File('plot.png'))
 
 # @client.event
 # async def on_reaction_add(reaction , user):
