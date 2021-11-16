@@ -14,9 +14,13 @@ import matplotlib.pyplot as plt
 
 
 client = discord.Client()
-sleeptime = 1
+sleeptime = 1 # change this to modify how long the bot waites before counting
 
-  
+def makeplot(names , values):
+  # make the plot and send it to the chat!
+  plt.bar(names, values)
+  plt.show()
+  plt.savefig(fname='./plooot.png')
   
   
 
@@ -74,25 +78,16 @@ async def on_message(message1):
     # make names and values for plot device
     names = []
     values = []
-
+    print(cache_msg.reactions[:])
     for i in cache_msg.reactions:
       print(i.emoji , i.count)
       names.append(i.emoji)
       values.append(i.count)
     
-    plt.bar(names, values)
-    plt.show()
-    plt.savefig('plot.png')
+    plt.bar(options , values)
+    plt.savefig("plot.png")
     await channel.send(file=discord.File('plot.png'))
-
-# @client.event
-# async def on_reaction_add(reaction , user):
-#   values = reaction.count
-
-  
-
-
-
+    
 
 # use uptimerobot.com . keeps this script running all the time.
 # keep_alive()
